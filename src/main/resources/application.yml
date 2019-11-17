@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    username: root
+    password: ling
+    url: jdbc:mysql://127.0.0.1:3306/shiro_demo?characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    timeout: 10000
+    jedis:
+      pool:
+        max-idle: 100
+        max-active: 100
+        max-wait: 10000
+        min-idle: 5
+
+# Mybatis相关配置
+mybatis:
+  type-aliases-package: com.shiro.demo.model
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# tk.mybatis配置
+mapper:
+  mappers:
+    - com.shiro.demo.utils.BaseMapper
+  not-empty: false
+  identity: MYSQL
+  check-example-entity-class: true
+  safe-delete: true
+  safe-update: true
+  use-java-type: true
+
+# 打印sql
+logging:
+  level:
+    com.shiro.demo.mapper: debug
