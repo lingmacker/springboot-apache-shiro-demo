@@ -1,6 +1,6 @@
 ### springboot 集成 Apache-shiro
 
-0. 版本信息和简介
+0. **版本信息和简介**
 
     springboot 版本为 **2.2.1.RELEASE**，JDK 版本为 **1.8**，MySQL 数据库版本为 **5.7**。
 
@@ -12,15 +12,15 @@
     - 数据库使用 mybatis 并集成通用 mapper 实现数据库操作
     - redis 通过 Jedis 工具包进行操作
 
-    注：jedis 集成和 mybatis 集成这里不作讲解，感兴趣的可以查看我写的另一个 [springboot-Jedis-demo](https://github.com/lingmacker/springboot-jedis-demo)
+    **注：jedis 集成和 mybatis 集成这里不作讲解，感兴趣的可以查看我写的另一个 [springboot-Jedis-demo](https://github.com/lingmacker/springboot-jedis-demo)**
 
     使用：
 
     - 创建数据库名为：shiro_demo，并在application.yml 和 mybatis-generator.xml 中配置好数据用户名和密码。
     - 运行项目根目录中的 shiro_demo.sql 文件导入相应数据
-    - 
+    - 使用命令 `git clone git@github.com:lingmacker/springboot-jedis-demo.git` 下载源码，导入 idea  即可，导入方式为 maven。
 
-1. springboot 添加 Apache-shiro 依赖
+1. **springboot 添加 Apache-shiro 依赖**
 
    ```xml
    <!--Apache shiro-->
@@ -31,7 +31,7 @@
    </dependency>
    ```
 
-2. 自定义一些常量
+2. **自定义一些常量**
 
    ```java
    package com.shiro.demo.common;
@@ -57,9 +57,9 @@
    }
    ```
 
-   
+3. **实现密码比较器**
 
-3. 实现密码比较器
+   密码比较器的作用是用来判断登录认证信息是否匹配。
 
    实现密码比较器只需要重写 org.apache.shiro.authc.credential.SimpleCredentialsMatcher 类中的 doCredentialsMatchdoCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) 即可；密码采用 shiro 提供的 sha256 算法进行加密，hash 次数为 10 次。
 
@@ -94,7 +94,7 @@
    }
    ```
 
-4. 自定义 realm 
+4. **自定义 realm** 
 
    shiro 需要进行身份验证时，需要通过 realm 获取相应的认证和授权信息来进行验证，所以自定义 realm 可以自定义验证信息和权限信息的来源。
 
@@ -147,9 +147,9 @@
    }
    ```
 
-   注：其中相应的 service 是从数据库中获取相应的信息的实现类，具体代码可在 github 上查看。
+   **注：其中相应的 service 是从数据库中获取相应的信息的实现类，具体代码可在 github 上查看。**
 
-5. 自定义 SessionDao 实现将 session 保存到 redis
+5. **自定义 SessionDao 实现将 session 保存到 redis**
 
    自定义 SessionDao 需要继承 org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO 类，并重写相应的 CRUD 方法，即可将 session 保存到 redis。
 
@@ -232,9 +232,9 @@
    }
    ```
 
-   注：其中 JedisUtil 二次封装 Jedis 用来操作 redis，具体实现可查看 github。
+   **注：其中 JedisUtil 二次封装 Jedis 用来操作 redis，具体实现可查看 github**
 
-6. 自定义 SessionManager 以减少程序从 redis 中读取 session 的次数
+6. **自定义 SessionManager 以减少程序从 redis 中读取 session 的次数**
 
    虽然通过上面的方法将 session 信息保存到了 redis，但是实际运行时，程序会反复到 redis 中读取 session 信息，我们可以自定义 SessionManager 以将 session 保存到 request 中，减少 redis 中session的读取。
 
@@ -272,7 +272,7 @@
    }
    ```
    
-7. 自定义 Cache，将授权信息保存到 redis
+7. **自定义 Cache，将授权信息保存到 redis**
 
    要将授权信息保存到 redis 首先需要实现 org.apache.shiro.cache.Cache 接口，重写其中的 CRUD 方法，并将自定义的 Cache 类设置到 CacheManager 中即可。
 
@@ -444,7 +444,7 @@
      }
      ```
 
-8. 最后，创建 ShiroConfigration 配置文件，将上面的自定义类配置到 shiro
+8. **最后，创建 ShiroConfigration 配置文件，将上面的自定义类配置到 shiro**
 
    ```java
    package com.shiro.demo.shiro;
@@ -543,7 +543,7 @@
    }
    ```
 
-9. shiro 认证和授权的使用
+9. **shiro 认证和授权的使用**
 
    通过以上的配置，即可通过 SecurityUtils 获取 Subject 进行用户的认证和授权。
 
