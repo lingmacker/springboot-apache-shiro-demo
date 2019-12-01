@@ -24,14 +24,14 @@ public class ShiroConfigration {
     private RedisCacheManager redisCacheManager;
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager manager) {
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("defaultWebSecurityManager") DefaultWebSecurityManager manager) {
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
         bean.setSecurityManager(manager);
 
         return bean;
     }
 
-    @Bean("securityManager")
+    @Bean("defaultWebSecurityManager")
     public DefaultWebSecurityManager defaultWebSecurityManager(@Qualifier("authorizingRealm") AuthorizingRealm realm,
                                                                @Qualifier("redisSessionManager") DefaultWebSessionManager sessionManager) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
