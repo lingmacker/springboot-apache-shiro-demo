@@ -5,6 +5,7 @@ import com.shiro.demo.service.RolePermissionService;
 import com.shiro.demo.service.UserPermissionService;
 import com.shiro.demo.service.UserRoleService;
 import com.shiro.demo.service.UserService;
+import com.shiro.demo.utils.JsonUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -44,6 +45,8 @@ public class CustomRealm extends AuthorizingRealm {
 
         info.addRoles(roles);
         info.addStringPermissions(permisseions);
+
+        System.out.println("从数据库获取权限数据:"+ JsonUtil.toJson(info));
 
         return info;
     }

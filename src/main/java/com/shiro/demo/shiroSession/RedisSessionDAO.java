@@ -1,6 +1,7 @@
 package com.shiro.demo.shiroSession;
 
 import com.shiro.demo.common.Const;
+import com.shiro.demo.utils.KeyUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
@@ -36,7 +37,7 @@ public class RedisSessionDAO extends EnterpriseCacheSessionDAO {
             return null;
         }
 
-        byte[] key = this.getKey(sessionId.toString());
+        byte[] key = KeyUtil.getRedisSessionKey(sessionId.toString());
         byte[] value = jedisUtil.get(key);
 
         return (Session) SerializationUtils.deserialize(value);
@@ -53,7 +54,7 @@ public class RedisSessionDAO extends EnterpriseCacheSessionDAO {
             return;
         }
 
-        byte[] key = this.getKey(session.getId().toString());
+        byte[] key = KeyUtil.getRedisSessionKey(session.getId().toString());
         jedisUtil.delete(key);
     }
 
@@ -76,16 +77,12 @@ public class RedisSessionDAO extends EnterpriseCacheSessionDAO {
 
     private void saveSession(Session session) {
         if (session != null && session.getId() != null) {
-            byte[] key = this.getKey(session.getId().toString());
+            byte[] key = KeyUtil.getRedisSessionKey(session.getId().toString());
             byte[] value = SerializationUtils.serialize(session);
 
             jedisUtil.set(key, value);
             jedisUtil.expire(key, Const.REDIS_SESSION_EXPIRE_TIME);
         }
-    }
-
-    private byte[] getKey(String key) {
-        return (Const.SHIRO_SESSION_PREFIX + key).getBytes();
     }
 
 }

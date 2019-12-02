@@ -24,16 +24,30 @@ public class ShiroConfigration {
     private RedisCacheManager redisCacheManager;
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager manager) {
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager securityManager,
+                                                         @Qualifier("customLoginFilter") CustomLoginFilter filter) {
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
-        bean.setSecurityManager(manager);
+        bean.setSecurityManager(securityManager);
+
+//        LinkedHashMap<String, Filter> filtersMap = new LinkedHashMap<>();
+//        filtersMap.put("loginFilter", filter);
+//        bean.setFilters(filtersMap); // 注册过滤器
+//
+//        LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
+//        linkedHashMap.put("/userLogin", "loginFilter");
+//        bean.setFilterChainDefinitionMap(linkedHashMap); // 注册过滤url链
 
         return bean;
     }
 
+    @Bean("customLoginFilter")
+    public CustomLoginFilter customLoginFilter() {
+        return new CustomLoginFilter();
+    }
+
     @Bean("securityManager")
     public DefaultWebSecurityManager defaultWebSecurityManager(@Qualifier("authorizingRealm") AuthorizingRealm realm,
-                                                               @Qualifier("redisSessionManager") DefaultWebSessionManager sessionManager) {
+                                                               @Qualifier("customSessionManager") DefaultWebSessionManager sessionManager) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setRealm(realm);
         manager.setSessionManager(sessionManager);
@@ -41,7 +55,7 @@ public class ShiroConfigration {
         return manager;
     }
 
-    @Bean("redisSessionManager")
+    @Bean("customSessionManager")
     @Autowired
     public DefaultWebSessionManager sessionManager(RedisSessionDAO redisSessionDAO) {
         DefaultWebSessionManager sessionManager = new CustomSessionManager();
@@ -58,6 +72,7 @@ public class ShiroConfigration {
 
         return customRealm;
     }
+
 
     @Bean("credentialsMatcher")
     public CredentialsMatcher credentialsMatcher() {

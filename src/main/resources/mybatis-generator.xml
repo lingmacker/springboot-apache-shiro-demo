@@ -37,7 +37,7 @@
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
                         connectionURL="jdbc:mysql://127.0.0.1:3306/shiro_demo"
                         userId="root"
-                        password="ling">
+                        password="admin">
         </jdbcConnection>
 
         <javaTypeResolver>
@@ -61,7 +61,7 @@
         </javaClientGenerator>
 
         <!--         配置数据库表 -->
-        <table tableName="%"
+        <table tableName="user" domainObjectName="User"
                schema="SCOTT"
                enableCountByExample="false"
                enableUpdateByExample="false"
@@ -70,6 +70,8 @@
                selectByExampleQueryId="false">
             <generatedKey column="id" sqlStatement="Mysql"/>
         </table>
+
+
 
     </context>
 </generatorConfiguration>

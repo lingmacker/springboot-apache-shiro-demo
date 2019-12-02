@@ -42,18 +42,24 @@
    
        // redis 中 sessionKey 的前缀
        public static final String SHIRO_SESSION_PREFIX = "shiro_session:";
+       
+       // redis 中 cacheKey 的前缀
+       public static final String SHIRO_CACHE_PREFIX = "shiro_cache:";
+       
+       // redis 中 设备登录数量 key 前缀
+       public static final String DEVICE_CACHE_PREFIX = "device_cache_prefix:";
    
        // Redis 中 session 超时时间，单位s
        public static final int REDIS_SESSION_EXPIRE_TIME = 600;
-   
-       // redis 中 cacheKey 的前缀
-       public static final String SHIRO_CACHE_PREFIX = "shiro_cache:";
    
        // Redis 中 cache 超时时间，单位s
        public static final int REDIS_CACHE_EXPIRE_TIME = 600;
    
        // 一次会话超时时间，超过时间后会自动退出登录，单位ms
        public static final int SESSION_EXPIRE_TIME = 1000 * 60 * 60 * 24;
+       
+       // 设备信息在redis保存时间，单位s
+       public static final int DEVICE_INFO_CACHE_EXPIRE_TIME = 60 * 60 * 24;
    }
    ```
 
@@ -600,3 +606,44 @@
        return "这里是后台管理页面";
    }
    ```
+   
+10. 登录设备数量限制实现
+
+    一个账号只允许 **电脑**、**手机**、**平板** 三种设备同时在线。
+
+    思路：每种设备登录时提供设备类型标识，在redis中登录用户名的每种设备登录的sessionId，每次登录的时候都去判断该种设备设备是否登录，同时更新登录信息。
+
+    使用以下类保存登录设备信息：
+
+    ```
+    public class DeviceInfo {
+        private String phone;
+        private String pc;
+        private String tablet;
+    }
+    ```
+
+    通过以下方法自动踢出上一个登录设备：
+
+    ```java
+    public void autoKickout(Subject subject, String username, String deviceType) {
+    
+            DeviceInfo deviceInfo = deviceUtil.getOrCreateDeviceInfo(username);
+            String existedSessionId = deviceInfo.getByType(deviceType);
+    
+            // 踢掉上一个人
+            if (!StringUtils.isEmpty(existedSessionId)) {
+                byte[] sessionKey = KeyUtil.getRedisSessionKey(existedSessionId);
+                byte[] cacheKey = KeyUtil.getRedisCacheKey(existedSessionId);
+                jedisUtil.delete(sessionKey);
+                jedisUtil.delete(cacheKey);
+            }
+    
+            // 保存当前登录信息
+            String sessionId = subject.getSession().getId().toString();
+            deviceInfo.setByType(deviceType, sessionId);
+            deviceUtil.saveDeviceInfoToRedis(username, deviceInfo);
+        }
+    ```
+
+    

@@ -2,6 +2,8 @@ package com.shiro.demo.shiroCache;
 
 import com.shiro.demo.common.Const;
 import com.shiro.demo.shiroSession.JedisUtil;
+import com.shiro.demo.utils.JsonUtil;
+import com.shiro.demo.utils.KeyUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
@@ -21,13 +23,15 @@ public class RedisCache<K, V> implements Cache<K, V> {
 
     @Override
     public V get(K k) throws CacheException {
-//        System.out.println("从redis中获取授权数据");
 
-        byte[] key = this.getKey(k);
+        byte[] key = KeyUtil.getRedisCacheKey(k);
 
         byte[] value = jedisUtil.get(key);
         if (value == null)
             return null;
+
+
+        System.out.println("从redis中获取授权数据:"+ JsonUtil.toJson(SerializationUtils.deserialize(value))+ "------key:"+JsonUtil.toJson(k));
 
         return (V) SerializationUtils.deserialize(value);
     }
@@ -39,7 +43,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
             return null;
         }
 
-        byte[] key = this.getKey(k);
+        byte[] key = KeyUtil.getRedisCacheKey(k);
         byte[] value = SerializationUtils.serialize(v);
 
         jedisUtil.set(key, value);
@@ -55,7 +59,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
             return null;
         }
 
-        byte[] key = this.getKey(k);
+        byte[] key = KeyUtil.getRedisCacheKey(k);
         byte[] value = jedisUtil.get(key);
 
         jedisUtil.delete(key);
@@ -122,12 +126,5 @@ public class RedisCache<K, V> implements Cache<K, V> {
         });
 
         return values;
-    }
-
-    private byte[] getKey(K k) {
-        if (k instanceof String) {
-            return (Const.SHIRO_CACHE_PREFIX + k).getBytes();
-        }
-        return SerializationUtils.serialize(k);
     }
 }

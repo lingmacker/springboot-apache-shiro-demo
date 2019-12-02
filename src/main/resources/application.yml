@@ -1,7 +1,7 @@
 spring:
   datasource:
     username: root
-    password: ling
+    password: admin
     url: jdbc:mysql://127.0.0.1:3306/shiro_demo?characterEncoding=UTF-8&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
 

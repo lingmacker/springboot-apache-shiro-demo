@@ -4,11 +4,11 @@ import com.shiro.demo.common.Const;
 import com.shiro.demo.mapper.UserMapper;
 import com.shiro.demo.model.User;
 import com.shiro.demo.shiro.ShiroUtil;
+import com.shiro.demo.utils.JsonUtil;
 import com.shiro.demo.utils.SaltUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,28 +22,30 @@ public class UserService {
     @Autowired
     private ShiroUtil shiroUtil;
 
-
     // shiro 相关
     public User getUserByUsername(String username) {
         return userMapper.selectByUsername(username);
 
     }
 
-    public Session login(String username, String password) {
+    public String login(String username, String password, String deviceType) {
         Subject subject = shiroUtil.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
 
         try {
             subject.login(token);
-            return subject.getSession();
+            shiroUtil.autoKickout(subject, username, deviceType); // 自动判断，踢掉上一个人
+
+            return JsonUtil.toJson(subject.getSession());
         } catch (AuthenticationException e) {
-            return null;
+            return "登陆失败";
         }
 
     }
 
     public boolean logout() {
         Subject subject = shiroUtil.getSubject();
+
         try {
             subject.logout();
             return true;

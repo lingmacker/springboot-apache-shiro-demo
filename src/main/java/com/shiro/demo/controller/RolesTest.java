@@ -1,9 +1,8 @@
 package com.shiro.demo.controller;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,6 +11,7 @@ public class RolesTest {
 
     @RequestMapping("/backend")
     @RequiresRoles("admin")
+    @RequiresPermissions("user:*")
     public String backend() {
         return "这里是后台管理页面";
     }
