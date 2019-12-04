@@ -27,7 +27,7 @@ mybatis:
 # tk.mybatis配置
 mapper:
   mappers:
-    - com.shiro.demo.utils.BaseMapper
+    - com.shiro.utils.BaseMapper
   not-empty: false
   identity: MYSQL
   check-example-entity-class: true

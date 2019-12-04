@@ -22,7 +22,7 @@
 
         <!--        生成简化mapper的插件， 不需要时直接注释掉-->
         <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-            <property name="mappers" value="com.shiro.demo.utils.BaseMapper"/>
+            <property name="mappers" value="com.shiro.utils.BaseMapper"/>
             <property name="beginningDelimiter" value="`"/>
             <property name="endingDelimiter" value="`"/>
         </plugin>

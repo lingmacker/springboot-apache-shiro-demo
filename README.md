@@ -72,7 +72,7 @@
    ```java
    package com.shiro.demo.shiro;
    
-   import com.shiro.demo.common.Const;
+   import com.shiro.common.Const;
    
    import org.apache.shiro.authc.AuthenticationInfo;
    import org.apache.shiro.authc.AuthenticationToken;
@@ -285,8 +285,8 @@
    - 首先需要自定义 Cache
 
      ```java
-     import com.shiro.demo.common.Const;
-     import com.shiro.demo.shiroSession.JedisUtil;
+     import com.shiro.common.Const;
+     import com.shiro.shiroSession.JedisUtil;
      import org.apache.commons.collections.CollectionUtils;
      import org.apache.shiro.cache.Cache;
      import org.apache.shiro.cache.CacheException;
@@ -455,10 +455,10 @@
    ```java
    package com.shiro.demo.shiro;
    
-   import com.shiro.demo.common.Const;
-   import com.shiro.demo.shiroCache.RedisCacheManager;
-   import com.shiro.demo.shiroSession.CustomSessionManager;
-   import com.shiro.demo.shiroSession.RedisSessionDAO;
+   import com.shiro.common.Const;
+   import com.shiro.shiro.CustomCredentialsMatcher;import com.shiro.shiro.CustomRealm;import com.shiro.shiroCache.RedisCacheManager;
+   import com.shiro.shiroSession.CustomSessionManager;
+   import com.shiro.shiroSession.RedisSessionDAO;
    import org.apache.shiro.authc.credential.CredentialsMatcher;
    import org.apache.shiro.mgt.SecurityManager;
    import org.apache.shiro.realm.AuthorizingRealm;
